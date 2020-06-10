@@ -12,15 +12,14 @@
             <thead>
                 <tr>
                     <th>予定</th>
-                    <th>状態</th>
+                    <th>今のところ..</th>
                     <th>ちょっとメモ</th>
                 </tr>
             </thead>
             <tbody>
             @foreach($tasks as $task)
                 <tr>
-                    {{-- <td>{!! link_to_route('tasks.edit', $task->content, ['task' => $task->id]) !!}</td> --}}
-                    <td>{{ $task->content }}</td>
+                    <td>{!! link_to_route('tasks.edit', $task->content, ['board' => $board->id, 'task' => $task->id], ['class' => 'btn btn-Light']) !!}</td>
                     <td>{{ $task->status }}</td>
                     <td>{{ $task->memo }}</td>
                 </tr>

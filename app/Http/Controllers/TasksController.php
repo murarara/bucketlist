@@ -51,15 +51,6 @@ class TasksController extends Controller
             'memo' => $request->memo,
         ]);
         
-        
-        // // 選択したボードのタスクとして作成
-        // Board::tasks()->create([
-        //     'board_id' => $board_id,
-        //     'content' => $request->content,
-        //     'status' => $request->status,
-        //     'memo' => $request->memo,
-        // ]);
-
         // タスク一覧ページへリダイレクト
         return redirect()->route('boards.show', ['board' => $board_id]);
     }
@@ -81,20 +72,16 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($board_id, $task_id)
     {
         // idの値でタスクを検索して取得
-        $task = Task::find($id);
+        $task = Task::find($task_id);
 
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $task->user_id) {
-            // タスク編集ビューでそれを表示
-            return view('tasks.edit', [
-                'task' => $task,
-            ]);
-        }
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        // タスク編集ビューでそれを表示
+        return view('tasks.edit', [
+            'board' => $board_id,
+            'task' => $task,
+        ]);
     }
 
     /**
@@ -104,27 +91,26 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $board_id, $task_id)
     {
         // バリデーション
         $request->validate([
             'content' => 'required|max:255',
             'status' => 'required|max:10',
+            'memo' => 'max:255',
         ]);
         
         // idの値でタスクを検索して取得
-        $task = Task::find($id);
+        $task = Task::find($task_id);
         
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $task->user_id) {
-            // タスクを更新
-            $task->content = $request->content;
-            $task->status = $request->status;
-            $task->save();
-        }
+        // タスクを更新
+        $task->content = $request->content;
+        $task->status = $request->status;
+        $task->memo = $request->memo;
+        $task->save();
 
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        // タスク一覧ページへリダイレクト
+        return redirect()->route('boards.show', ['board' => $board_id]);
     }
 
     /**
@@ -133,17 +119,17 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($board_id, $task_id)
     {
         // idの値でタスクを検索して取得
-        $task = Task::find($id);
+        $task = Task::find($task_id);
         // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合は、投稿を削除
         if (\Auth::id() === $task->user_id) {
             $task->delete();
         }
 
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        // タスク一覧ページへリダイレクト
+        return redirect()->route('boards.show', ['board' => $board_id]);
     }
     
     

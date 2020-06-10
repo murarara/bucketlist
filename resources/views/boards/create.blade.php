@@ -10,12 +10,12 @@
 
                 <div class="form-group">
                     {!! Form::label('title', 'タイトル:') !!}
-                    {!! Form::text('title', null, ['class' => 'form-control']) !!}
+                    {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'バケットリスト']) !!}
                     {!! Form::label('desc', 'ボードの説明:') !!}
-                    {!! Form::text('desc', null, ['class' => 'form-control']) !!}
+                    {!! Form::text('desc', null, ['class' => 'form-control', 'placeholder' => '死ぬ前にやり残したこと']) !!}
                 </div>
 
-                {!! Form::submit('add', ['class' => 'btn btn-primary']) !!}
+                {!! Form::submit('このボードでＯＫ！', ['class' => 'btn btn-primary']) !!}
 
             {!! Form::close() !!}
         </div>
