@@ -3,25 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Board;
+use App\Task;
 
 class TasksController extends Controller
 {
     public function index()
     {
-        $data = [];
-        if (\Auth::check()) {
-            // 認証済みユーザ（閲覧者）を取得
-            $user = \Auth::user();
-            // ユーザのタスク一覧を作成日時の降順で取得
-            $tasks = $user->feed_tasks()->orderBy('id', 'asc')->paginate(10);
-
-            $data = [
-                'user' => $user,
-                'tasks' => $tasks,
-            ];
-        }
-        
-        return view('tasks.index', $data);
+        //
     }
 
     /**
@@ -29,10 +18,11 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
         $task = new Task;
         return view('tasks.create',[
+            'board' => $id,
             'task' => $task,
         ]);
     }
@@ -43,22 +33,35 @@ class TasksController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $id)
     {
         // バリデーション
         $request->validate([
             'content' => 'required|max:255',
             'status' => 'required|max:10',
+            'memo' => 'max:255'
         ]);
         
-        // 認証済みユーザ（閲覧者）のタスクとして作成（リクエストされた値をもとに作成）
-        $request->user()->tasks()->create([
+        $board_id = $id;
+        
+        Task::create([
+            'board_id' => $board_id,
             'content' => $request->content,
             'status' => $request->status,
+            'memo' => $request->memo,
         ]);
+        
+        
+        // // 選択したボードのタスクとして作成
+        // Board::tasks()->create([
+        //     'board_id' => $board_id,
+        //     'content' => $request->content,
+        //     'status' => $request->status,
+        //     'memo' => $request->memo,
+        // ]);
 
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        // タスク一覧ページへリダイレクト
+        return redirect()->route('boards.show', ['board' => $board_id]);
     }
 
     /**
@@ -69,18 +72,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = Task::find($id);
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $task->user_id) {
-    
-            // タスク詳細ビューでそれを表示
-            return view('tasks.show', [
-                'task' => $task,
-            ]);
-        }
-        
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        //
     }
 
     /**
@@ -153,4 +145,6 @@ class TasksController extends Controller
         // トップページへリダイレクトさせる
         return redirect('/');
     }
+    
+    
 }

@@ -18,7 +18,7 @@ class CreateTasksTable extends Migration
             $table->unsignedBigInteger('board_id');
             $table->string('content');
             $table->string('status');
-            $table->string('memo');
+            $table->string('memo')->nullable();
             $table->timestamps();
 
             // 外部キー制約

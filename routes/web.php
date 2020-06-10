@@ -12,8 +12,6 @@
 */
 
 Route::get('/', 'BoardsController@index');
-Route::get('create', 'BoardsController@create')->name('boards.create');
-Route::post('store', 'BoardsController@store')->name('boards.store');
 
 // ユーザ登録
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
@@ -25,3 +23,8 @@ Route::post('login', 'Auth\LoginController@login')->name('login.post');
 Route::get('logout', 'Auth\LoginController@logout')->name('logout.get');
 
 
+Route::get('create', 'BoardsController@create')->name('boards.create');
+Route::post('store', 'BoardsController@store')->name('boards.store');
+Route::get('board/{board}', 'BoardsController@show')->name('boards.show');
+Route::get('board/{board}/tasks/create', 'TasksController@create')->name('tasks.create');
+Route::post('board/{board}/tasks', 'TasksController@store')->name('tasks.store');
