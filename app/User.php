@@ -36,4 +36,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    public function boards(){
+        return $this->hasMany(Board::class);
+    }
+    
+    /**
+     * このユーザのボードに絞り込む。
+     */
+    public function feed_boards()
+    {
+        // このユーザのid
+        $userIds = $this->id;
+        // そのユーザが所有するボードに絞り込む
+        return Board::where('user_id', $userIds);
+    }
 }
