@@ -16,6 +16,9 @@
                           <div class="col-sm-6 col-md-3">
                                 <div class="card h-100" style="width: 18rem;">
                                   <div class="card-body">
+                                    {!! Form::open(['route' => ['boards.delete', $board], 'method' => 'delete']) !!}
+                                        {!! Form::submit('×', ['class' => 'btn btn-Light']) !!}
+                                    {!! Form::close() !!}
                                     <h2 class="card-title">{{ $board->title }}</h2>
                                         <p class="card-subtitle mb-2 text-muted">{{ $board->desc }}</p>
                                         {!! link_to_route('boards.show', 'このボードを見る', ['board' => $board->id], ['class' => 'btn btn-Light']) !!}
