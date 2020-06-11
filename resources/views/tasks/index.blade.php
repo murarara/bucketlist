@@ -14,6 +14,7 @@
                     <th>予定</th>
                     <th>今のところ..</th>
                     <th>ちょっとメモ</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +23,13 @@
                     <td>{!! link_to_route('tasks.edit', $task->content, ['board' => $board->id, 'task' => $task->id], ['class' => 'btn btn-Light']) !!}</td>
                     <td>{{ $task->status }}</td>
                     <td>{{ $task->memo }}</td>
+                    <td>
+                        {!! Form::open(['route' => ['tasks.delete', $board, $task], 'method' => 'delete']) !!}
+                            {!! Form::submit('×', ['class' => 'btn btn-danger btn-sm']) !!}
+                        {!! Form::close() !!}
+                    </td>
                 </tr>
+                
             @endforeach
             </tbody>
         </table>

@@ -13,11 +13,6 @@ class TasksController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create($id)
     {
         $task = new Task;
@@ -27,12 +22,6 @@ class TasksController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request, $id)
     {
         // バリデーション
@@ -55,23 +44,11 @@ class TasksController extends Controller
         return redirect()->route('boards.show', ['board' => $board_id]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($board_id, $task_id)
     {
         // idの値でタスクを検索して取得
@@ -84,13 +61,6 @@ class TasksController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $board_id, $task_id)
     {
         // バリデーション
@@ -113,24 +83,15 @@ class TasksController extends Controller
         return redirect()->route('boards.show', ['board' => $board_id]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($board_id, $task_id)
+    public function destroy($board_id,$task_id)
     {
         // idの値でタスクを検索して取得
         $task = Task::find($task_id);
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合は、投稿を削除
-        if (\Auth::id() === $task->user_id) {
-            $task->delete();
-        }
+        
+        $task->delete();
 
         // タスク一覧ページへリダイレクト
         return redirect()->route('boards.show', ['board' => $board_id]);
     }
-    
     
 }
