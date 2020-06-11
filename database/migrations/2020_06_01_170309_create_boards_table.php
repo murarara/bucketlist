@@ -17,7 +17,7 @@ class CreateBoardsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->string('title');
-            $table->string('desc');
+            $table->string('desc')->nullable();
             $table->timestamps();
 
             // 外部キー制約

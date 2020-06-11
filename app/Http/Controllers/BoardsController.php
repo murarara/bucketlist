@@ -35,7 +35,7 @@ class BoardsController extends Controller
         // バリデーション
         $request->validate([
             'title' => 'required|max:255',
-            'desc' => 'required|max:255',
+            'desc' => 'max:255',
         ]);
         
         // 認証済みユーザ（閲覧者）のボードとして作成（リクエストされた値をもとに作成）
@@ -67,13 +67,13 @@ class BoardsController extends Controller
     public function edit($id)
     {
         // idの値でタスクを検索して取得
-        $task = Task::find($id);
+        $board = Board::find($id);
 
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $task->user_id) {
+        // 認証済みユーザ（閲覧者）がそのボードの所有者である場合
+        if (\Auth::id() === $board->user_id) {
             // タスク編集ビューでそれを表示
-            return view('tasks.edit', [
-                'task' => $task,
+            return view('boards.edit', [
+                'board' => $board,
             ]);
         }
         // トップページへリダイレクトさせる
@@ -84,20 +84,31 @@ class BoardsController extends Controller
     {
         // バリデーション
         $request->validate([
-            'content' => 'required|max:255',
-            'status' => 'required|max:10',
+            'title' => 'required|max:255',
+            'desc' => 'max:255',
         ]);
         
         // idの値でタスクを検索して取得
-        $task = Task::find($id);
+        $board = Board::find($id);
         
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $task->user_id) {
-            // タスクを更新
-            $task->content = $request->content;
-            $task->status = $request->status;
-            $task->save();
+        // 認証済みユーザ（閲覧者）がそのボードの所有者である場合
+        if (\Auth::id() === $board->user_id) {
+            // ボードを更新
+            $board->title = $request->title;
+            $board->desc = $request->desc;
+            $board->save();
         }
+
+        // トップページへリダイレクトさせる
+        return redirect('/');
+    }
+    
+    public function destroy($id)
+    {
+        // idの値でタスクを検索して取得
+        $board = Board::find($id);
+        
+        $board->delete();
 
         // トップページへリダイレクトさせる
         return redirect('/');

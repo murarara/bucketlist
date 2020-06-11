@@ -19,6 +19,7 @@
                                     <h2 class="card-title">{{ $board->title }}</h2>
                                         <p class="card-subtitle mb-2 text-muted">{{ $board->desc }}</p>
                                         {!! link_to_route('boards.show', 'このボードを見る', ['board' => $board->id], ['class' => 'btn btn-Light']) !!}
+                                        {!! link_to_route('boards.edit', '編集', ['board' => $board->id], ['class' => 'btn btn-Light']) !!}
                                   </div>
                                 </div>
                           </div>
