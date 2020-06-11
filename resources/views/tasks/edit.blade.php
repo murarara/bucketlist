@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1>タスク編集ページ</h1>
+    <h1>{{ $task->content }}</h1>
     
     <div class="row">
         <div class="col-6">
