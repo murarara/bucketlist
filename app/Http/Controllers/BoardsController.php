@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Board;
+use App\User;
 
 class BoardsController extends Controller
 {
@@ -14,8 +15,9 @@ class BoardsController extends Controller
             $user = \Auth::user();
             // ユーザのボード一覧を作成日時の降順で取得
             $boards = $user->feed_boards()->orderBy('id', 'asc')->paginate(10);
+            $share_boards = $user->feed_share_boards()->orderBy('id', 'asc')->paginate(10);
             
-            return view('welcome', ['user' => $user,'boards' => $boards]);
+            return view('welcome', ['user' => $user, 'boards' => $boards,'share_boards' => $share_boards]);
         }
         
         // ログインしていない
@@ -53,12 +55,11 @@ class BoardsController extends Controller
         $board = Board::find($id);
         // ボードのタスク一覧を作成日時の降順で取得
         $tasks = $board->feed_tasks()->orderBy('id', 'asc')->paginate(10);
-        // 認証済みユーザ（閲覧者）がそのタスクの所有者である場合
-        if (\Auth::id() === $board->user_id) {
-    
+        // 認証済みユーザ（閲覧者）がそのボードの作成者である場合, またはそのボードを閲覧許可しているユーザの場合
+        //if (\Auth::id() === $board->user_id || ) {
             // タスク一覧ビューでそれらを表示
             return view('tasks.index', ['board' => $board, 'tasks' => $tasks]);
-        }
+        //}
         
         // トップページへリダイレクトさせる
         return redirect('/');
@@ -69,7 +70,7 @@ class BoardsController extends Controller
         // idの値でタスクを検索して取得
         $board = Board::find($id);
 
-        // 認証済みユーザ（閲覧者）がそのボードの所有者である場合
+        // 認証済みユーザ（閲覧者）がそのボードの作成者である場合
         if (\Auth::id() === $board->user_id) {
             // タスク編集ビューでそれを表示
             return view('boards.edit', [
@@ -91,7 +92,7 @@ class BoardsController extends Controller
         // idの値でタスクを検索して取得
         $board = Board::find($id);
         
-        // 認証済みユーザ（閲覧者）がそのボードの所有者である場合
+        // 認証済みユーザ（閲覧者）がそのボードの作成者である場合
         if (\Auth::id() === $board->user_id) {
             // ボードを更新
             $board->title = $request->title;

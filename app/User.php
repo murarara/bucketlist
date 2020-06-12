@@ -41,14 +41,46 @@ class User extends Authenticatable
         return $this->hasMany(Board::class);
     }
     
-    /**
-     * このユーザのボードに絞り込む。
-     */
-    public function feed_boards()
-    {
+    // このユーザを閲覧許可しているボード
+    public static function share_boards(){
+        return $this->belongsToMany(Board::class, 'board_share', 'user_id', 'board_id')->withTimestamps();
+    }
+    
+    // $board_idで指定されたボードを閲覧許可にする。
+    public function share($user_id,$board_id){
+        // すでに閲覧許可しているかの確認
+        $exist = $user_id->is_sharing($user_id, $board_id);
+
+        if ($exist) {
+            // すでにシェアしていれば何もしない
+            return false;
+        } else {
+            // 閲覧の許可をする
+            $user_id->share_boards()->attach($board_id);
+            return true;
+        }
+    }
+    
+    public function is_sharing($user_id, $board_id){
+        // シェア中ボードの中に $board_idのものが存在するか
+        return $user_id->share_boards()->where('board_id', $board_id)->exists();
+    }
+
+    //このユーザのボードに絞り込む。
+    public function feed_boards(){
         // このユーザのid
-        $userIds = $this->id;
+        $user_id = $this->id;
+        
         // そのユーザが所有するボードに絞り込む
-        return Board::where('user_id', $userIds);
+        return Board::where('user_id', $user_id);
+    }
+
+    //このユーザが閲覧許可されているボードに絞り込む。
+    public function feed_share_boards(){
+        // このユーザが閲覧許可されている board_id を取得して配列にする
+        $boards_id = $this->share_boards()->pluck('boards.id')->toArray();
+        
+        // それらのボードに絞り込む
+        return Board::whereIn('id', $boards_id);
     }
 }

@@ -16,13 +16,16 @@ class Board extends Model
         return $this->hasMany(Task::class);
     }
     
-    /**
-     * このボードのタスクに絞り込む。
-     */
-    public function feed_tasks()
-    {
+    // このボードが閲覧許可しているユーザ
+    public function share_users(){
+        return $this->belongsToMany(User::class, 'board_share', 'board_id', 'user_id')->withTimestamps();
+    }
+    
+    //このボードのタスクに絞り込む。
+    public function feed_tasks(){
         // このボードのid
         $boardIds = $this->id;
+        
         // そのユーザが所有するボードに絞り込む
         return Task::where('board_id', $boardIds);
     }
